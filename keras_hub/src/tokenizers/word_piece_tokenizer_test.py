@@ -226,6 +226,16 @@ class WordPieceTokenizerTest(TestCase):
             [["ah", "半", "推", "zz"]],
         )
 
+    def test_unicode_whitespace_splits_words(self):
+        # No-break space, ideographic space, em space and line separator
+        # split words like an ASCII space.
+        vocab_data = ["[UNK]", "ab", "cd"]
+        tokenizer = self.make_tokenizer(vocabulary=vocab_data, dtype="string")
+        for space in ["\xa0", "\u3000", "\u2003", "\u2028"]:
+            self.assertAllEqual(
+                tokenizer([f"ab{space}cd"]), [["ab", "cd"]], msg=repr(space)
+            )
+
     def test_lowercase(self):
         input_data = ["the QUicK brOWN FOX"]
         vocab_data = ["[UNK]", "the", "qu", "##ick", "br", "##own", "fox"]

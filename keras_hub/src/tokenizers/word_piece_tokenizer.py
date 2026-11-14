@@ -29,10 +29,13 @@ except ImportError:
 
 VOCAB_FILENAME = "vocabulary.txt"
 
-# Matches whitespace and control characters.
+# Matches whitespace and control characters. RE2's `\s` only matches ASCII
+# whitespace, so Unicode separators (no-break space, ideographic space, ...)
+# are added with `\p{Z}`, as the BERT tokenizer does.
 WHITESPACE_REGEX = r"|".join(
     [
         r"\s",
+        r"\p{Z}",
         # Invisible control characters
         r"\p{Cc}",
         r"\p{Cf}",
@@ -99,6 +102,7 @@ WHITESPACE_PUNCTUATION_AND_CJK_REGEX = r"|".join(
 PY_WHITESPACE_REGEX = r"|".join(
     [
         r"[ \t\n\r\f]",
+        r"\p{Z}",
         r"\p{Cc}",
         r"\p{Cf}",
     ]
